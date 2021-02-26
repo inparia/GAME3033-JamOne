@@ -32,7 +32,7 @@ public class ButtonBehaviour : MonoBehaviour
 
     public void mainMenu()
     {
-        SceneManager.LoadScene("Main");
+        SceneManager.LoadScene("MainScene");
     }
 
     public void exitGame()

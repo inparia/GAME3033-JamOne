@@ -6,7 +6,7 @@ public class Projectile : MonoBehaviour
 {
 
     public bool hit;
-    public ParticleSystem effect;
+    public GameObject effect;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,6 +24,8 @@ public class Projectile : MonoBehaviour
         if (other.gameObject.tag == "Player")
         {
             hit = true;
+            GameObject particleEffect = Instantiate(effect, gameObject.transform.position, Quaternion.identity);
+            particleEffect.GetComponent<ParticleSystem>().Play();
             Destroy(gameObject);
         }
     }
@@ -32,7 +34,6 @@ public class Projectile : MonoBehaviour
     {
         if (hit)
         {
-            effect.Play();
             GameManager.Instance.playerLife--;
         }
     }
