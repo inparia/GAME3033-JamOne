@@ -1,2 +1,2 @@
-# GAME3033-JamOne
- 
+# GAME3033-Project
+ GAME3033-Project

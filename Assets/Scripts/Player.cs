@@ -12,6 +12,10 @@ public class Player : MonoBehaviour
     public float walkMovement;
     public float speed = 100;
     public Text resumeText;
+    private Vector3 playerVelocity;
+    private bool groundedPlayer;
+    private float jumpHeight = .35f;
+    private float gravityValue = -9.81f;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,31 +25,26 @@ public class Player : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-            myCharacterController.Move(new Vector3(walkMovement * Time.deltaTime * speed, 0, 0));
+        
 
-            if (transform.position.x >= 8.5)
-            {
-                transform.position = new Vector3(8.49f, transform.position.y, transform.position.z);
-
-            }
-
-            else if (transform.position.x <= -8.5)
-            {
-                transform.position = new Vector3(-8.49f, transform.position.y, transform.position.z);
-            }
-
-
-
-            if (walkMovement == 0 && !idle && !GameManager.Instance.gamePaused)
+        if (walkMovement == 0 && !idle && !GameManager.Instance.gamePaused)
             {
                 animator.SetBool("isRunning", false);
                 idle = true;
                 transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
             }
 
-        
+        playerVelocity.y += gravityValue * Time.deltaTime;
+        myCharacterController.Move(new Vector3(walkMovement * Time.deltaTime * speed, playerVelocity.y * Time.deltaTime, 0));
+
+        groundedPlayer = myCharacterController.isGrounded;
+
+        if (groundedPlayer && playerVelocity.y < 0)
+        {
+            playerVelocity.y = 0f;
+        }
     }
 
     public void OnWalk(InputAction.CallbackContext context)
@@ -66,7 +65,11 @@ public class Player : MonoBehaviour
             }
         }
     }
-
+    public void OnJump()
+    {
+        if(groundedPlayer)
+            playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
+    }
     public void PauseGame()
     {
         if (!GameManager.Instance.gamePaused && GameManager.Instance.gamePlay)
